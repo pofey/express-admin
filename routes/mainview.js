@@ -7,7 +7,7 @@ exports.get = function (req, res, next) {
     for (var key in settings) {
         var view = settings[key];
         if (!view.mainview.show || !view.table.pk) continue;
-        tables.push({slug: view.slug, name: view.table.verbose});
+        tables.push({slug: view.slug, name: view.table.verbose, readonly: view.editview.readonly});
     }
     var views = [], have = false;
     for (var key in custom) {

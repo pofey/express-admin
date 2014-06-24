@@ -2,7 +2,9 @@
 <h2>
     {{string.select}} {{view.name}} {{string.to-change}}.
     <a href="#" class="glyphicon glyphicon-filter" title="{{string.filter}}"></a>
+    {{^view.readonly}}
     <a href="{{root}}/{{view.slug}}/add" class="btn btn-default">{{string.add}} {{view.name}}</a>
+    {{/view.readonly}}
 </h2>
 
 {{#show.success}}
@@ -33,7 +35,12 @@
     {{#records}}
         <tr>
         {{#pk}}
+            {{#view.readonly}}
+            <td>{{text}}</td>
+            {{/view.readonly}}
+            {{^view.readonly}}
             <td><a href="{{root}}/{{view.slug}}/{{id}}">{{text}}</a></td>
+            {{/view.readonly}}
         {{/pk}}
         {{#values}}
             <td>

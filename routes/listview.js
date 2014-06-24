@@ -72,7 +72,8 @@ function render (req, res, args, data, pager, order, next) {
     res.locals.view = {
         name: args.config.table.verbose,
         slug: args.slug,
-        error: res.locals.error
+        error: res.locals.error,
+        readonly: args.config.editview.readonly
     };
     res.locals.breadcrumbs = {
         links: [

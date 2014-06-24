@@ -12,7 +12,9 @@
         <tr>
             <td>
                 <a href="{{root}}/{{slug}}">{{name}}</a>
+                {{^readonly}}
                 <a href="{{root}}/{{slug}}/add" class="glyphicon glyphicon-plus" title="{{string.add}} {{name}}"></a>
+                {{/readonly}}
             </td>
         </tr>
     {{/tables}}
