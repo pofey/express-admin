@@ -36,19 +36,20 @@ function initDatabase (args, cb) {
         db.empty(db.client.config.schema, function (err, empty) {
             if (err) return cb(err);
             if (empty) return cb(new Error('Empty schema!'));
-            
             var schema = new Schema(db);
-            schema.getAllColumns(function (err, info) {
-                if (err) return cb(err);
-
-                // write back the settings
-                var fpath = path.join(args.dpath, 'settings.json'),
-                    updated = settings.refresh(args.settings, info);
-                fs.writeFileSync(fpath, JSON.stringify(updated, null, 4), 'utf8');
-
-                args.settings = updated;
+            if(args.config.app.autoUpdateSetting){
+                schema.getAllColumns(function (err, info) {
+                    if (err) return cb(err);
+                    // write back the settings
+                    var fpath = path.join(args.dpath, 'settings.json'),
+                        updated = settings.refresh(args.settings, info);
+                    fs.writeFileSync(fpath, JSON.stringify(updated, null, 4), 'utf8');
+                    args.settings = updated;
+                    cb();
+                });
+            }else{
                 cb();
-            });
+            }
         });
     });
 }
@@ -181,7 +182,7 @@ function initServer (args) {
         res.locals._admin = args;
 
         // i18n
-        var lang = req.cookies.lang || 'en';
+        var lang = req.cookies.lang || 'cn';
         res.cookie('lang', lang, {path: '/', maxAge: 900000000});
         
         // template vars
