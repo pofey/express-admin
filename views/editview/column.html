@@ -23,7 +23,7 @@
     {{/textarea}}
 
     {{#select}}
-    <select name="{{key}}" class="chosen-select form-control" data-placeholder="{{string.select}}" {{#multiple}}multiple="multiple"{{/multiple}}>
+    <select name="{{key}}" class="chosen-select form-control chosen-auto-search" data-placeholder="{{string.select}}" {{#multiple}}multiple="multiple"{{/multiple}}>
         <option value="" {{#selected}}selected="selected"{{/selected}}></option>
         {{!oneToMany}}
         {{#value}}

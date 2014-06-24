@@ -36,8 +36,8 @@ function initDatabase (args, cb) {
         db.empty(db.client.config.schema, function (err, empty) {
             if (err) return cb(err);
             if (empty) return cb(new Error('Empty schema!'));
-            var schema = new Schema(db);
             if(args.config.app.autoUpdateSetting){
+                var schema = new Schema(db);
                 schema.getAllColumns(function (err, info) {
                     if (err) return cb(err);
                     // write back the settings
