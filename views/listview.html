@@ -1,4 +1,3 @@
-
 <h2>
     {{string.select}} {{view.name}} {{string.to-change}}.
     <a href="#" class="glyphicon glyphicon-filter" title="{{string.filter}}"></a>
@@ -23,34 +22,46 @@
 
 {{>filter}}
 
-<table class="table table-bordered table-striped table-hover x-table">
+<table class="table  table-bordered table-striped table-hover x-table">
     <thead>
-        <tr class="label-default">
+    <tr class="label-default">
+        {{#view.selectAll}}
+        <th style="width: 10px;"><input id="select-all" type="checkbox"/></th>
+        {{/view.selectAll}}
         {{#columns}}
-            <th>{{.}}</th>
+        <th>{{.}}</th>
         {{/columns}}
-        </tr>
+    </tr>
     </thead>
     <tbody>
     {{#records}}
-        <tr>
+    <tr>
         {{#pk}}
-            {{#view.readonly}}
-            <td>{{text}}</td>
-            {{/view.readonly}}
-            {{^view.readonly}}
-            <td><a href="{{root}}/{{view.slug}}/{{id}}">{{text}}</a></td>
-            {{/view.readonly}}
+        {{#view.readonly}}
+        <td>{{text}}</td>
+        {{/view.readonly}}
+        {{^view.readonly}}
+        {{#view.selectAll}}
+        <td class="checkbox-toggle"><input type="checkbox" name="batch" value="{{id}}"/></td>
+        {{/view.selectAll}}
+        <td><a href="{{root}}/{{view.slug}}/{{id}}">{{text}}</a></td>
+        {{/view.readonly}}
         {{/pk}}
         {{#values}}
-            <td>
-                {{^mtm}}{{.}}{{/mtm}}
-                {{#mtm}}<span class="label label-default">{{.}}</span>{{/mtm}}
-            </td>
+        <td>
+            {{^mtm}}{{.}}{{/mtm}}
+            {{#mtm}}<span class="label label-default">{{.}}</span>{{/mtm}}
+        </td>
         {{/values}}
-        </tr>
+    </tr>
     {{/records}}
     </tbody>
 </table>
-
+<h2>
+    {{^view.readonly}}
+    {{#view.selectAll}}
+    <a id="" href="javascript:void(0)" class="btn btn-default batch-edit">{{string.batch-to-change}}</a>
+    {{/view.selectAll}}
+    {{/view.readonly}}
+</h2>
 {{>pagination}}

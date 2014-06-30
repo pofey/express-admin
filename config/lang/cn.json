@@ -24,6 +24,7 @@
     
     "select"            : "选择",
     "to-change"         : "修改",
+    "batch-to-change"   : "批量修改",
     "filter"            : "过滤",
     "clear"             : "清除",
     "order"             : "排序",

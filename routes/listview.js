@@ -72,7 +72,8 @@ function render(req, res, args, data, pager, order, next) {
         name: args.config.table.verbose,
         slug: args.slug,
         error: res.locals.error,
-        readonly: args.config.editview.readonly
+        readonly: args.config.editview.readonly,
+        selectAll: args.config.listview.selectAll
     };
     res.locals.breadcrumbs = {
         links: [

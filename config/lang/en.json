@@ -24,6 +24,7 @@
     
     "select"            : "Select",
     "to-change"         : "to change",
+    "batch-to-change"   : "batch to change",
     "filter"            : "Filter",
     "clear"             : "Clear",
     "order"             : "Order By",

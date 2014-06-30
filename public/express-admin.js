@@ -73,6 +73,25 @@ Date.prototype.toJSONLocal = function () {
     }
 
     $(function () {
+        $('#select-all').click(function() {
+            $('.checkbox-toggle input[type="checkbox"]').each(function(){
+                // toggle checkbox
+                $(this).prop('checked',$('#select-all').prop('checked'));
+            });
+        });
+        $('.batch-edit').on("click",function(e){
+            var ids=[];
+            $('.checkbox-toggle input[type="checkbox"]').each(function(){
+                if($(this).prop('checked')){
+                    ids.push($(this).prop("value"));
+                }
+            });
+            if(ids.length == 0){
+                alert("Please select rows!");
+            }else{
+                window.location.href=xAdmin.root+'/'+xAdmin.slug+'/'+ids.join(',');
+            }
+        });
         // inlines
         $('.add-another').on('click', function (e) {
             // table and current index
