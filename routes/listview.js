@@ -1,9 +1,8 @@
-
 var dcopy = require('deep-copy');
 // listview
 var listview = {
-    query: require('../lib/listview/query'),
-    data: require('../lib/listview/data')},
+        query: require('../lib/listview/query'),
+        data: require('../lib/listview/data')},
     pagination = require('../lib/listview/pagination'),
     filter = require('../lib/listview/filter');
 // editview
@@ -14,15 +13,15 @@ var editview = {
 };
 
 
-function getArgs (req, res) {
+function getArgs(req, res) {
     var args = {
-        settings : res.locals._admin.settings,
-        db       : res.locals._admin.db,
-        debug    : res.locals._admin.debug,
-        log      : res.locals._admin.log,
-        slug     : req.params[0],
-        page     : req.query.p || 0,
-        data     : req.body
+        settings: res.locals._admin.settings,
+        db: res.locals._admin.db,
+        debug: res.locals._admin.debug,
+        log: res.locals._admin.log,
+        slug: req.params[0],
+        page: req.query.p || 0,
+        data: req.body
     };
     args.name = res.locals._admin.slugs[args.slug];
     args.config = dcopy(args.settings[args.name]);
@@ -37,7 +36,7 @@ exports.post = function (req, res, next) {
     data(req, res, next);
 }
 
-function data (req, res, next) {
+function data(req, res, next) {
     var args = getArgs(req, res);
     args.filter = filter.prepareSession(req, args);
     args.query = listview.query(args);
@@ -49,7 +48,7 @@ function data (req, res, next) {
             // always should be in front of filter.getColumns
             // as it may reduce args.config.columns
             var order = filter.getOrderColumns(req, args);
-            args.config.columns = filter.getColumns(args);
+            args.config.columns = filter.getColumnSearch(req,res,args);
 
             editview.otm.get(args, function (err) {
                 if (err) return next(err);
@@ -61,12 +60,12 @@ function data (req, res, next) {
     });
 }
 
-function render (req, res, args, data, pager, order, next) {
+function render(req, res, args, data, pager, order, next) {
     // set filter active items
-    for (var i=0; i < args.config.columns.length; i++) {
+    for (var i = 0; i < args.config.columns.length; i++) {
         var column = args.config.columns[i],
             value = args.filter.columns[column.name];
-        column.value = editview.format.value(column, value);
+        column.value = editview.format.valueForSearch(column, value);
     }
 
     res.locals.view = {
@@ -88,8 +87,8 @@ function render (req, res, args, data, pager, order, next) {
             rows = [];
         var size = 2,
             total = filter.length / size;
-        for (var i=0; i < total; i++) {
-            rows.push({row: filter.slice(i*size, (i+1)*size)});
+        for (var i = 0; i < total; i++) {
+            rows.push({row: filter.slice(i * size, (i + 1) * size)});
         }
         return rows;
     }());
@@ -110,11 +109,11 @@ function render (req, res, args, data, pager, order, next) {
     res.locals.pagination = pager;
 
     res.locals.partials = {
-        content:    'listview',
-        filter:     'listview/filter',
-        column:     'listview/column',
+        content: 'listview',
+        filter: 'listview/filter',
+        column: 'listview/column',
         pagination: 'pagination'
     };
-    
+
     next();
 }

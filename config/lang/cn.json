@@ -45,5 +45,9 @@
     "saved"             : "数据已保存",
     "checkout"          : "请检查高亮数据项",
 
-    "notfound"          : "您请求的页面不存在."
+    "notfound"          : "您请求的页面不存在.",
+
+    "search-show-all"    : "全部",
+    "search-show-include"    : "包含",
+    "search-show-exclude"    : "不包含"
 }
