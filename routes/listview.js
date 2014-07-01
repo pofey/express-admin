@@ -52,8 +52,8 @@ function data(req, res, next) {
 
             editview.otm.get(args, function (err) {
                 if (err) return next(err);
-                editview.stc.get(args);
-
+                editview.stc.get(args,"list");
+                editview.stc.filterStaticData(args,data);
                 render(req, res, args, data, pager, order, next);
             });
         });
