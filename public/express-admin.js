@@ -89,7 +89,7 @@ Date.prototype.toJSONLocal = function () {
             if(ids.length == 0){
                 alert("Please select rows!");
             }else{
-                window.location.href=xAdmin.root+'/'+xAdmin.slug+'/'+ids.join(',');
+                //window.location.href=xAdmin.root+'/'+xAdmin.slug+'/'+ids.join(',');
             }
         });
         // inlines
