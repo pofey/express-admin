@@ -21,10 +21,11 @@
     
     {{^view.readonly}}
     <fieldset id="controls">
+        {{#permission.deleteAllowed}}
         {{#show.delete}}
         <button type="submit" class="btn btn-danger form-control" name="action[remove]">{{string.delete}}</button>
         {{/show.delete}}
-
+        {{/permission.deleteAllowed}}
         <button type="submit" class="btn btn-default form-control" name="action[another]">{{string.save-add}}</button>
         
         <button type="submit" class="btn btn-default form-control" name="action[continue]">{{string.save-continue}}</button>

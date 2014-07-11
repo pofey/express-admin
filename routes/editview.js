@@ -1,30 +1,29 @@
-
 var dcopy = require('deep-copy');
 var editview = require('../lib/editview/index'),
     database = require('../lib/db/update');
 
 
-function getArgs (req, res) {
+function getArgs(req, res) {
     var args = {
-        settings : res.locals._admin.settings,
-        db       : res.locals._admin.db,
-        debug    : res.locals._admin.debug,
-        log      : res.locals._admin.log,
-        slug     : req.params[0],
-        id       : req.params[1] == 'add' ? null : req.params[1].split(','),
-        data     : req.body,
-        upload   : req.files,
-        upath    : res.locals._admin.config.app.upload
+        settings: res.locals._admin.settings,
+        db: res.locals._admin.db,
+        debug: res.locals._admin.debug,
+        log: res.locals._admin.log,
+        slug: req.params[0],
+        id: req.params[1] == 'add' ? null : req.params[1].split(','),
+        data: req.body,
+        upload: req.files,
+        upath: res.locals._admin.config.app.upload
     };
     args.name = res.locals._admin.slugs[args.slug];
     args.config = dcopy(args.settings[args.name]);
     return args;
 }
 
-function page (req, args) {
+function page(req, args) {
     if (!req.session.filter || !req.session.filter[args.name]) return '';
     var page = req.session.filter[args.name].page;
-    return page ? '?p='+page : '';
+    return page ? '?p=' + page : '';
 }
 
 exports.get = function (req, res, next) {
@@ -32,7 +31,7 @@ exports.get = function (req, res, next) {
 
     editview.getTypes(args, function (err, data) {
         if (err) return next(err);
-        
+
         render(req, res, next, data, args);
     });
 }
@@ -50,7 +49,7 @@ exports.post = function (req, res, next) {
             action = req.body.action,
             table = Object.keys(view)[0];
 
-        if ({}.hasOwnProperty.call(action, 'remove')) {
+        if ({}.hasOwnProperty.call(action, 'remove') && args.config.editview.deleteAllowed) {
             // should be based on constraints
             args.action = 'remove';
 
@@ -65,42 +64,42 @@ exports.post = function (req, res, next) {
 
 
         events.preSave(req, res, args, function () {
-        database.update(args, function (err) {
-        events.postSave(req, res, args, function () {
-            if (err) {
-                req.session.error = err.message;
-                res.redirect(res.locals.root+'/'+args.slug+page(req, args));
-                return;
-            }
+            database.update(args, function (err) {
+                events.postSave(req, res, args, function () {
+                    if (err) {
+                        req.session.error = err.message;
+                        res.redirect(res.locals.root + '/' + args.slug + page(req, args));
+                        return;
+                    }
 
-            // based on clicked button
-            switch (true) {
-                case {}.hasOwnProperty.call(action, 'remove'):
-                    // the message should be different for delete
-                    req.session.success = true;
-                    res.redirect(res.locals.root+'/'+args.slug+page(req, args));
-                    break;
-                case {}.hasOwnProperty.call(action, 'save'):
-                    req.session.success = true;
-                    res.redirect(res.locals.root+'/'+args.slug+page(req, args));
-                    break;
-                case {}.hasOwnProperty.call(action, 'another'):
-                    req.session.success = true;
-                    res.redirect(res.locals.root+'/'+args.slug+'/add');
-                    break;
-                case {}.hasOwnProperty.call(action, 'continue'):
-                    req.session.success = true;
-                    if (args.debug) return render(req, res, next, data, args);
-                    res.redirect(res.locals.root+'/'+args.slug+'/'+args.id.join());
-                    break;
-            }
-        });
-        });
+                    // based on clicked button
+                    switch (true) {
+                        case {}.hasOwnProperty.call(action, 'remove'):
+                            // the message should be different for delete
+                            req.session.success = true;
+                            res.redirect(res.locals.root + '/' + args.slug + page(req, args));
+                            break;
+                        case {}.hasOwnProperty.call(action, 'save'):
+                            req.session.success = true;
+                            res.redirect(res.locals.root + '/' + args.slug + page(req, args));
+                            break;
+                        case {}.hasOwnProperty.call(action, 'another'):
+                            req.session.success = true;
+                            res.redirect(res.locals.root + '/' + args.slug + '/add');
+                            break;
+                        case {}.hasOwnProperty.call(action, 'continue'):
+                            req.session.success = true;
+                            if (args.debug) return render(req, res, next, data, args);
+                            res.redirect(res.locals.root + '/' + args.slug + '/' + args.id.join());
+                            break;
+                    }
+                });
+            });
         });
     });
 }
 
-function render (req, res, next, data, args) {
+function render(req, res, next, data, args) {
     var string = res.locals.string;
     var view = args.settings[args.name];
 
@@ -112,10 +111,13 @@ function render (req, res, next, data, args) {
         readonly: view.editview.readonly,
         success: args.success
     };
+    res.locals.permission = {
+        deleteAllowed: view.editview.deleteAllowed
+    };
     res.locals.breadcrumbs = {
         links: [
             {url: '/', text: string.home},
-            {url: '/'+args.slug, text: view.table.verbose},
+            {url: '/' + args.slug, text: view.table.verbose},
             {active: true, text: req.params[1]}
         ]
     };
@@ -126,13 +128,13 @@ function render (req, res, next, data, args) {
     data.oneToOne.type = 'one';
     data.manyToOne.type = 'many';
     res.locals.inline = [data.oneToOne, data.manyToOne];
-        
+
     res.locals.partials = {
-        content:  'editview',
-        view:     'editview/view',
-        inline:   'editview/inline',
-        column:   'editview/column'
+        content: 'editview',
+        view: 'editview/view',
+        inline: 'editview/inline',
+        column: 'editview/column'
     };
-    
+
     next();
 }
